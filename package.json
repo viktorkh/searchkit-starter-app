@@ -15,5 +15,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+  "description": "Used to start new applications which use Searchkit. Based off the popular create-react-app. If you dont know about `create-react-app`, please read their [readme](https://github.com/facebookincubator/create-react-app/blob/master/README.md) and install create-react-app on your machine",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viktorkh/searchkit-starter-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/viktorkh/searchkit-starter-app/issues"
+  },
+  "homepage": "https://github.com/viktorkh/searchkit-starter-app#readme"
 }
