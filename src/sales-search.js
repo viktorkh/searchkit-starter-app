@@ -19,7 +19,7 @@ import {
 
 
 
-const host = "https://vm-amelastic.clicksoftware.com:9200/ent_index,tfs_index,documentation_v8_3_patch010_index,attach_index,domino_index/";
+const host = "https://vm-amelastic.clicksoftware.com:9200/sales_portal_index,rfp_index/";
 
 const searchkit = new SearchkitManager(host);
 
@@ -40,7 +40,7 @@ const customQueryBuilder = (query, options) => {
             "query": query,
 
 
-            "fields": ["id^2",  "body","replies.records.body", "repro_Steps", "description", "title^2", "wikiId", "comments.commentId^1", "caseNumber^1", "comments.body", "wikiTags.product"]
+                "fields": ["id", "type", "body",  "description__c", "title","name","question__c","answer__c","answer_Short__c"]
           }
         }
 
@@ -213,50 +213,9 @@ class MovieHitsTable extends React.Component {
                     </span>)
                     : (<span>   </span>)}
                 </div>
-                <div>
-                  {hit.highlight && hit.highlight.repro_Steps ? (
-
-                    <span>
-                      {hit.highlight.repro_Steps.map(function (_highlight, j) {
-
-                        return <div key={j}><span key={j} dangerouslySetInnerHTML={{ __html: _highlight }} /></div>
-                      })}
-
-                    </span>)
-                    : (<span>   </span>)}
-                </div>
-
-                <div>
-
-
-                  {hit.highlight && hit.highlight['comments.body'] ? (
-
-                    <span>
-                      {hit.highlight['comments.body'].map(function (_highlight1, d) {
-
-                        return <div key={d}><span key={d} dangerouslySetInnerHTML={{ __html: _highlight1 }} /></div>
-                      })}
-
-                    </span>)
-                    : (<span>   </span>)}
-                </div>
-                  <div>
-
-
-                  {hit.highlight && hit.highlight['replies.records.body'] ? (
-
-                    <span>
-                      {hit.highlight['replies.records.body'].map(function (_highlight1, d) {
-
-                        return <div key={d}><span key={d} dangerouslySetInnerHTML={{ __html: _highlight1 }} /></div>
-                      })}
-
-                    </span>)
-                    : (<span>   </span>)}
-                </div>
+              
+           
                  <div>
-
-
                   {hit.highlight && hit.highlight['name'] ? (
 
                     <span>
@@ -268,27 +227,54 @@ class MovieHitsTable extends React.Component {
                     </span>)
                     : (<span>   </span>)}
                 </div>
-                <span>
-                  {hit._source.caseNumber && _isCase ? (
-                    <div>
-                      <span className="span_open_case"><a href={hit._source.url} target="_blank" key={i}>open case</a> </span>
-                      <span className="span_open_portal"><a href={_caseId} target="_blank" >open in portal</a> </span>
-                    </div>)
-                    : (<span>   </span>)}
-                </span>
-                <span>
-                  {hit._source.caseNumber && _isAttach ? (
-                    <div>
-                      <span className="span_open_case"><a href={hit._source.url} target="_blank" key={i}>open case in sfdc</a> </span>
-                      <span className="span_open_portal"><a href={_attachUrl} target="_blank" >open attachment in sfdc</a> </span>
-                      <span className="span_open_portal"><a href={_caseId} target="_blank" >open case in portal</a> </span>
-                    </div>)
-                    : (<span>   </span>)}
-                </span>
-              
+            
+                <div>
+
+
+                  {hit.highlight  && hit.highlight['description__c'] ? (
+
+                     <span>
+                      {hit.highlight['description__c'].map(function (_highlight1, d) {
+
+                        return <div key={d}><span key={d} dangerouslySetInnerHTML={{ __html: _highlight1 }} /></div>
+                      })}
+
+                    </span>)
+                    : (<span>  
+                       </span>)}
+                </div>
+                     <div>
+
+
+                  {hit.highlight  && hit.highlight['answer_Short__c'] ? (
+
+                     <span>
+                      {hit.highlight['answer_Short__c'].map(function (_highlight1, d) {
+
+                        return <div key={d}><span key={d} dangerouslySetInnerHTML={{ __html: _highlight1 }} /></div>
+                      })}
+
+                    </span>)
+                    : (<span>  
+                       </span>)}
+                </div>
+                     <div>
+
+
+                  {hit.highlight  && hit.highlight['question__c'] ? (
+
+                     <span>
+                      {hit.highlight['question__c'].map(function (_highlight1, d) {
+
+                        return <div key={d}><span key={d} dangerouslySetInnerHTML={{ __html: _highlight1 }} /></div>
+                      })}
+
+                    </span>)
+                    : (<span>  
+                       </span>)}
+                </div>
                 <br />
               </div>
-
                 ;
             })}
 
@@ -361,9 +347,9 @@ class App extends Component {
           placeholder="Search here ..."
           autofocus={true} queryBuilder={customQueryBuilder}
           searchOnChange={false}
-          prefixQueryFields={["id",  "body", "title", "repro_Steps","name" ,"replies.records.body",
-          "repro_steps", "description", "wikiId", "comments.commentId",
-           "caseNumber", "comments.body"]} />
+             prefixQueryFields={["id", "type", "body", "title", "name" ,"Name", "description__c","question__c","answer__c","answer_Short__c"]} 
+             />
+         
       </TopBar>
       <LayoutBody>
 
@@ -372,56 +358,20 @@ class App extends Component {
 		  
           <a className="helpLink" target="_blank" href="https://wiki.clicksoftware.com/display/IWI/Elastic+Search+Syntax+Help">Help</a>
 <br/>
-          <RefinementListFilter
+        
+<RefinementListFilter
             id="typeId"
             title="Types"
-            field="type"
+            field="type.keyword"
             operator="OR"
             size={10} />
 
-
-          <InputFilter
-            id="Id_unique_search"
-            title="ID Search "
-            placeholder="Search by ID"
-            searchOnChange={true}
-            prefixQueryFields={["wikiId", "id", "caseNumber"]}
-            queryFields={["wikiId", "id", "caseNumber"]} />
-
-
-
-      
-
           <RefinementListFilter
-            field="tag_product_not_an"
-            title="Product"
+            id="content_Position_ID"
+            title="Content Position"
+            field="content_Position.keyword"
             operator="OR"
-            size={5}
-            id="productTagsId" />
-
-
-          <RefinementListFilter
-            field="tag_hub_not_an"
-            title="Hub"
-            operator="OR"
-            size={5}
-            id="hubTagsId" />
-
-
-          <RefinementListFilter
-            field="tag_version_not_an"
-            title="Version"
-            operator="OR"
-            size={5}
-            id="versionTagsId" />
-
-         
-
-          <Panel title="TFS refinement" collapsable={true} defaultCollapsed={true}>
-            <HierarchicalMenuFilter size={999}
-              fields={["product_not_an", "area_path_not_an", "state_not_an"]} title=" " id="area_Path_id"
-            />
-          </Panel>
+            size={10} />
 
         </Menu>
         <LayoutResults>
@@ -445,12 +395,11 @@ class App extends Component {
 
           <div>
 
-            <Hits hitsPerPage={10} highlightFields={["title", "body", "repro_Steps", "repro_steps", "description", "comments.body","name","replies.records.body"]}
-              sourceFilter={["title","application_name","name","extension_type", "url", "comments.body", 
-              "comments", "id", "repro_Steps", "repro_steps", "wikiSpaceKey", "parentId","replies.records.body",
-               "wikiSpace", "comments.commentId", "type", "casenumber", "caseNumber"]}
+             <Hits hitsPerPage={10} highlightFields={["title", "body", "description__c", "name","question__c","answer_Short__c"]}
+              sourceFilter={["title","name", "url", "body", "id", "type","description__c","question__c","answer__c","answer_Short__c"]}
               listComponent={MovieHitsTable}
             />
+
 
           </div>
 		  <Pagination className={"testClass"} showNumbers={true} />
